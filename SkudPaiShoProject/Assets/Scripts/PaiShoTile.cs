@@ -4,15 +4,18 @@ using UnityEngine;
 
 public abstract class PaiShoTile : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    public int currentX { get; set; }
+    public int currentY { get; set; }
+    public BoardManager.playerSide side;
+
+    public void SetPosition(int x, int y)
     {
-        
+        currentX = x;
+        currentY = y;
     }
 
-    // Update is called once per frame
-    void Update()
+    public virtual bool[,] PossibleMove()
     {
-        
+        return new bool[16, 16];
     }
 }

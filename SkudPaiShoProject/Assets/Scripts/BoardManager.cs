@@ -4,9 +4,16 @@ using UnityEngine;
 
 public class BoardManager : MonoBehaviour
 {
+    public enum playerSide { Host, Guest };
+
     public int radius;
     public GameObject grid;
     public GameObject _Dynamic;
+
+    public List<GameObject> homeTiles;
+    public List<GameObject> guestTiles;
+
+
 
     private int radiusSquared;
     private int selectionX;
@@ -18,6 +25,18 @@ public class BoardManager : MonoBehaviour
         if(_Dynamic == null)
         {
             _Dynamic = GameObject.Find("_Dynamic");
+        }
+
+        if(guestTiles.Count != 0)
+        {
+            foreach (var item in guestTiles)
+            {
+                var temp = item.GetComponent<PaiShoTile>();
+                if (temp.side != playerSide.Guest)
+                {
+                    temp.side = playerSide.Guest;
+                }
+            }
         }
 
         DrawChessBoard();
@@ -58,17 +77,11 @@ public class BoardManager : MonoBehaviour
         {
             selectionX = (int)hit.point.x;
             selectionY = (int)hit.point.y;
-
-            if (hit.transform != null)
-                hit.transform.GetComponent<Renderer>().material.color = Color.red;
         }
         else
         {
             selectionX = -1;
             selectionY = -1;
-
-            if(hit.transform != null)
-                hit.transform.GetComponent<Renderer>().material.color = Color.white;
         }
     }
 }
