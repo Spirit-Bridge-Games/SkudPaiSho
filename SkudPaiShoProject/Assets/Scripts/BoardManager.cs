@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class BoardManager : MonoBehaviour
@@ -10,10 +11,9 @@ public class BoardManager : MonoBehaviour
     public GameObject grid;
     public GameObject _Dynamic;
 
-    public List<GameObject> homeTiles;
-    public List<GameObject> guestTiles;
+    public List<Vector3> gridPositions = new List<Vector3>();
 
-    public List<Vector3> gates;
+    public List<Transform> gates;
 
     private Vector3 hostGate;
     private Vector3 guestGate;
@@ -33,20 +33,22 @@ public class BoardManager : MonoBehaviour
             _Dynamic = GameObject.Find("_Dynamic");
         }
 
-        if(guestTiles.Count != 0)
-        {
-            foreach (var item in guestTiles)
-            {
-                var temp = item.GetComponent<PaiShoTile>();
-                if (temp.side != playerSide.Guest)
-                {
-                    temp.side = playerSide.Guest;
-                }
-            }
-        }
+        //if(guestTiles.Count != 0)
+        //{
+        //    foreach (var item in guestTiles)
+        //    {
+        //        var temp = item.GetComponent<PaiShoTile>();
+        //        if (temp.side != playerSide.Guest)
+        //        {
+        //            temp.side = playerSide.Guest;
+        //        }
+        //    }
+        //}
 
-        hostGate = gates[0];
-        guestGate = gates[2];
+        InitializeGridPositions();
+
+        hostGate = gates[0].position;
+        guestGate = gates[2].position;
         currentTurn = playerSide.Host;
     }
 
@@ -71,20 +73,22 @@ public class BoardManager : MonoBehaviour
         }
     }
 
-    private void DrawChessBoard()
+    private void InitializeGridPositions()
     {
         radiusSquared = radius * radius;
-        for (int x = -radius; x <= radius; ++x)
+        for (int x = -radius + 1; x < radius; ++x)
         {
-            for (int y = -radius; y <= radius; ++y)
+            for (int z = -radius + 1; z < radius; ++z)
             {
-                if(new Vector2(x,y).sqrMagnitude <= radiusSquared)
+                if (new Vector2(x, z).sqrMagnitude <= radiusSquared)
                 {
-                    if (x != radius && x != -radius && y != radius && y != -radius)
+                    var has = gates.Any(t => t.position == new Vector3(x, 0, z));
+                    if (has)
                     {
-                        GameObject block = Instantiate(grid, new Vector3(x, 0, y), Quaternion.identity);
-                        block.transform.SetParent(_Dynamic.transform);
+                        Debug.Log(x + "," + z);
+                        continue;
                     }
+                    gridPositions.Add(new Vector3(x, 0, z));
                 }
             }
         }

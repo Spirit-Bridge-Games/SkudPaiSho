@@ -6,7 +6,9 @@ public abstract class PaiShoTile : MonoBehaviour
 {
     public int currentX { get; set; }
     public int currentY { get; set; }
+
     public BoardManager.playerSide side;
+    public bool onBoard { get; set; }
 
     public void SetPosition(int x, int y)
     {
